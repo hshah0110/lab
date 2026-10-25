@@ -6,6 +6,26 @@ Designed for common app scenarios, easy extensibility, and minimal setup.
 
 ---
 
+## External product data
+
+The app registers `lab_product` through `Lab_productsService` and the Item model
+includes the optional `lab_productid` lookup. The `OpenFoodFacts` data source
+exposes `OpenFoodFactsService.GetProductByBarcode(barcode)` and
+`OpenFoodFactsService.GetProductImage(imageUrl)`.
+
+Deploy `Solutions.DataModel` and `Solutions.Connectors` before binding these
+sources. Connections are environment-specific. Resolve the deployed connector's
+`name` using `pa connector list --search "Open Food Facts" --json`, create its
+connection with `pa connection create`, and bind it with
+`pa app add data-source --connector <name> --connection-id <id>`. Pass
+`--environment-id <Dev environment id>` to each command while
+`power.config.json` has no environment ID. Do not use the Dataverse schema name
+`lab_connectorsopenfoodfacts` as the connector ID.
+
+The CLI generates an environment-specific data-source name. Keep the
+`OpenFoodFacts` alias consistent in `power.config.json`, `dataSourcesInfo.ts`,
+and `OpenFoodFactsService.ts` after regenerating the connector.
+
 ## Highlights
 - **Modern tooling** - Vite, TypeScript, and React
 - **Out-of-box styling** - Fluent UI components, light/dark theming and toasts out of the box
