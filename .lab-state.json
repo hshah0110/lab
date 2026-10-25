@@ -3,5 +3,8 @@
   "tenantId": "957a313a-971b-4add-b513-038b581bc3e7",
   "slnxName": "WarehouseManagement",
   "publisherName": "TALXISLab",
-  "publisherPrefix": "lab"
+  "publisherPrefix": "lab",
+  "repo": "hshah0110/lab",
+  "mainRulesetId": 25828835,
+  "mainRulesetName": "lab-main-protection"
 }
