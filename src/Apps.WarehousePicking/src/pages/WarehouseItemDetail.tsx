@@ -24,6 +24,9 @@ import { useStyles } from "@/styles/WarehouseItemDetail.styles";
 import { servicePayload, serviceResult } from "@/utils/ServicePayload";
 import { errorText } from "@/utils/StockTransactions";
 import { toNumber } from "@/utils/RecordValues";
+import { Lab_productsService } from "@/generated/services/Lab_productsService";
+import { BarcodeScanDialog } from "@/components/BarcodeScanDialog";
+import { ProductImage } from "@/components/ProductImage";
 
 const transactionColumns: IColumn[] = [
   { name: "lab_name", displayName: "Name", dataType: "SingleLine.Text", isPrimary: true, visualSizeFactor: 240 },
@@ -92,6 +95,13 @@ export default function WarehouseItemDetailPage() {
       return result.data ?? [];
     },
     enabled: !!id,
+  });
+
+  const productId = item?._lab_productid_value;
+  const { data: product, error: productError, isLoading: productLoading } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: async () => (await serviceResult(Lab_productsService.get(productId!))).data,
+    enabled: !!productId,
   });
 
   const { data: locations, error: locationsError } = useQuery({
@@ -222,6 +232,20 @@ export default function WarehouseItemDetailPage() {
   return (
     <div className={styles.page}>
       <div className={styles.details}>
+        <BarcodeScanDialog
+          key={item.lab_warehouseitemid}
+          itemId={item.lab_warehouseitemid}
+          currentProductId={productId}
+          onLinked={async () => { await queryClient.invalidateQueries(); }}
+        />
+        {productLoading && <Body1>Loading linked product...</Body1>}
+        {productError && <Body1 role="alert">Could not load linked product: {errorText(productError)}</Body1>}
+        {product && (
+          <section aria-label="Linked product">
+            <Body1>Linked product: <strong>{product.lab_name}</strong></Body1>
+            <ProductImage imageUrl={product.lab_imageurl} name={product.lab_name} />
+          </section>
+        )}
         {transactionsError && (
           <Body1 className={styles.muted}>{errorText(transactionsError)}</Body1>
         )}
