@@ -26,6 +26,23 @@ The CLI generates an environment-specific data-source name. Keep the
 `OpenFoodFacts` alias consistent in `power.config.json`, `dataSourcesInfo.ts`,
 and `OpenFoodFactsService.ts` after regenerating the connector.
 
+### Barcode scanning
+
+Open an item and select **Scan Barcode** (or **Rescan Barcode**). Allow camera
+access, or type a barcode and select **Look Up**; manual entry is always available.
+For example, `3017620422003` previews Nutella. Select **Link to Item** to reuse a
+Product with the same EAN or create one, link it to the item, and then upload its
+image to the Product's File column. Image-save errors are reported without
+undoing the saved Product or Item link.
+
+The camera uses `@zxing/browser` and stops when the dialog closes or a barcode is
+decoded. Camera access requires HTTPS (or localhost) and browser permission.
+Images load through `GetProductImage` and render as data URLs to respect the
+code app's content security policy.
+
+Run `npm test` for barcode lookup, Product reuse/create, link ordering, image
+formats, and partial-failure regression tests.
+
 ## Highlights
 - **Modern tooling** - Vite, TypeScript, and React
 - **Out-of-box styling** - Fluent UI components, light/dark theming and toasts out of the box
